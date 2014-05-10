@@ -245,24 +245,6 @@ var parse = exports.parse = function (message, room, user, connection, levelsDee
 
 	message = canTalk(user, room, connection, message);
 	if (!message) return false;
-	//spamroom
-	// if user is not in spamroom
-	if(spamroom[user.userid] == undefined){
-		// check to see if an alt exists in list
-		for(var u in spamroom){
-			if(Users.get(user.userid) == Users.get(u)){
-				// if alt exists, add new user id to spamroom, break out of loop.
-				spamroom[user.userid] = true;
-				break;
-			}
-		}
-	}
-
-	if (spamroom[user.userid]) {
-		Rooms.rooms.spamroom.add('|c|' + user.getIdentity() + '|' + message);
-		connection.sendTo(room, "|c|" + user.getIdentity() + "|" + message);
-		return false;
-	}
 
 	//tells
 	var alts = user.getAlts();
@@ -380,7 +362,7 @@ function canTalk(user, room, connection, message) {
 			}
 			user.lastMessage = message;
 			user.lastMessageTime = Date.now();
-			
+
 			if (message.toLowerCase().indexOf('.psim.us') > -1 || message.toLowerCase().indexOf('play.pokemonshowdown.com/~~') > -1) {
 				if (message.toLowerCase().indexOf('amethyst.psim.us') > -1) {
 					return message;
@@ -388,7 +370,7 @@ function canTalk(user, room, connection, message) {
 				 connection.sendTo(room,"Sorry, yet that is a link to another server which is advertising.");
 				 return false;
 			}
-			
+
 		     /*	if (message.toLowerCase().indexOf("nigger") > -1 || message.toLowerCase().indexOf("nigga") > -1 || message.toLowerCase().indexOf("cunt") > -1 || message.toLowerCase().indexOf("whore") > -1) {
 				connection.sendTo(room,"Sorry, yet that word is banned from lobby.");
 				return false;
