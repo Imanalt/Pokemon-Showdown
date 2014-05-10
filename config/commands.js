@@ -1492,9 +1492,9 @@ var commands = exports.commands = {
 			matched = true;
 			this.sendReply("/kickbattle [username], [reason] - Kicks an user from a battle with reason. Requires: " + Users.getGroupsThatCan('kick').join(" "));
 		}
-		if (Users.can(target, 'warn') || target === 'warn' || target === 'k') {
+		if (Users.can(target, 'warn') || target === 'warn') {
 			matched = true;
-			this.sendReply("/warn OR /k [username], [reason] - Warns a user showing them the Pokemon Showdown Rules and [reason] in an overlay. Requires: " + Users.getGroupsThatCan('warn', room).join(" "));
+			this.sendReply("/warn [username], [reason] - Warns a user showing them the Pokemon Showdown Rules and [reason] in an overlay. Requires: " + Users.getGroupsThatCan('warn', room).join(" "));
 		}
 		if (Users.can(target, 'mute') || target === 'mute' || target === 'm') {
 			matched = true;
