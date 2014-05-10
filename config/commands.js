@@ -1125,6 +1125,12 @@ var commands = exports.commands = {
 	 * Custom commands
 	 *********************************************************/
 
+	pr: 'pickrandom',
+	pickrandom: function (target, room, user) {
+		if (!this.canBroadcast()) return false;
+		return this.sendReply(target.split(',').map(function (s) { return s.trim(); }).randomize()[0]);
+	},
+
 	spam: 'spamroom',
 	spamroom: function (target, room, user) {
 		if (!target) return this.sendReply("Please specify a user.");
