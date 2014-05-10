@@ -1,5 +1,5 @@
-//There are a few things you'll need to add if you want to use this file. You need to change the makechatroom command so 
-//that it resets the hangman status upon making a chatroom; otherwise trying to run hangman in the new room will crash 
+//There are a few things you'll need to add if you want to use this file. You need to change the makechatroom command so
+//that it resets the hangman status upon making a chatroom; otherwise trying to run hangman in the new room will crash
 //the server. Specifically, you'll need to add "hangman.reset(id)" somewhere in the code. Have fun! - piiiikachuuu
 
 exports.hangman = function(h) {
@@ -32,12 +32,12 @@ exports.hangman = function(h) {
 	}
 	return hangman;
 };
-	
-var cmds = {	
+
+var cmds = {
 	hangmanhelp: function(target, room, user) {
 		if (!this.canBroadcast()) return;
 		this.sendReplyBox('<font size = 2>A brief introduction to </font><font size = 3>Hangman:</font><br />' +
-						'The classic game, the basic idea of hangman is to guess the word that someone is thinking of before the man is "hanged." Players are given 8 guesses before this happens.<br />' + 
+						'The classic game, the basic idea of hangman is to guess the word that someone is thinking of before the man is "hanged." Players are given 8 guesses before this happens.<br />' +
 						'Games can be started by any of the rank Voice or higher, including Room Voice, Room Mod, and Room Owner.<br />' +
 						'The commands are:<br />' +
 						'<ul><li>/hangman [word], [description] - Starts the game of hangman, with a specified word and a general category. Requires: + % @ & ~</li>' +
@@ -50,9 +50,9 @@ var cmds = {
 						'Due to some recent changes, hangman can now be played in multiple rooms at once (excluding lobby, it\'s a little spammy).<br />' +
 						'Have fun, and feel free to PM me if you find any bugs! - piiiikachuuu');
 	},
-	
+
 	hangman: function(target, room, user) {
-		if (!user.can('broadcast', null, room)) {
+		if (!user.can('broadcast', room)) {
 			return this.sendReply('You do not have enough authority to do this.');
 		}
 		if(room.id === 'lobby') {
@@ -213,7 +213,7 @@ var cmds = {
 		if(room.id === 'lobby') {
 				return this.sendReply('|html|Please play this in another room; it\'s too spammy for lobby.');
 		}
-		if (!user.can('broadcast', null, room)) {
+		if (!user.can('broadcast', room)) {
 			return this.sendReply('You do not have enough authority to do this.');
 		}
 		if(hangman[room.id].hangman === false) {
@@ -227,4 +227,3 @@ var cmds = {
 };
 
 for (var i in cmds) CommandParser.commands[i] = cmds[i];
-	

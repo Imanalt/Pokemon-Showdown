@@ -583,7 +583,11 @@ var commands = {
 		l: 'leave',
 		out: 'leave',
 		leave: function (tournament, user) {
-			tournament.removeUser(user, this);
+			if (tournament.isTournamentStarted) {
+				tournament.disqualifyUser(user, this);
+			} else {
+				tournament.removeUser(user, this);
+			}
 		},
 		getupdate: function (tournament, user) {
 			tournament.update(user);
@@ -667,7 +671,7 @@ CommandParser.commands.tournament = function (paramString, room, user) {
 		if (params.length < 2)
 			return this.sendReply("Usage: " + cmd + " <format>, <type> [, <comma-separated arguments>]");
 
-		createTournament(room, params.shift(), params.shift(), Config.istournamentsrated, params, this);
+		createTournament(room, params.shift(), params.shift(), Config.isTournamentsRated, params, this);
 	} else {
 		var tournament = getTournament(room.title);
 		if (!tournament)
