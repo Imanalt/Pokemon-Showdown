@@ -13,6 +13,14 @@ exports.Formats = [
 		banlist: []
 	},
 	{
+		name: "Imprisonmons",
+		section: "Amethyst Metas",
+		
+		mod: 'imprison',
+		ruleset: ['Pokemon', 'Standard', 'Team Preview'],
+		banlist: ['Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite', 'Lucarionite', 'Swagger']
+	},
+	{
 		name: "Sketchmons",
 		section: "Amethyst Metas",
 
