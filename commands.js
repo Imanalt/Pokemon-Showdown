@@ -2022,7 +2022,7 @@ var commands = exports.commands = {
 
 	b: 'ban',
 	bh: 'ban',
-	ban: function (target, room, user) {
+	ban: function (target, room, user, connection, cmd) {
 		if (!target) return this.parse('/help ban');
 
 		target = this.splitTarget(target);
