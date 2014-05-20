@@ -572,10 +572,10 @@ var commands = exports.commands = {
 	 	if (!this.canBroadcast()) return;
 	 	if (!target) {
 	 		userid = user.userid;
-	 		username = sanitize(user.name);
+	 		username = Tools.escapeHTML(user.name);
 	 	} else {
 	 		userid = toId(target);
-	 		username = sanitize(target);
+	 		username = Tools.escapeHTML(target);
 	 	}
 	 	self = this;
 	 	fs.readFile('config/badges.txt','utf8',function(err, data) {
@@ -1266,7 +1266,7 @@ var commands = exports.commands = {
 		}
 		user.originalname = user.name;
 		if (target.length > 0) {
-			this.add('|html|<font color="purple"><b>'+user.name+'</b></font> is now Away ('+sanitize(target)+').');
+			this.add('|html|<font color="purple"><b>'+user.name+'</b></font> is now Away ('+Tools.escapeHTML(target)+').');
 		} else {
 			this.add('|html|<font color="purple"><b>'+user.name+'</b></font> is now Away.');
 		}
@@ -1319,7 +1319,7 @@ var commands = exports.commands = {
 		if (tells[targetUser].length === 5) return this.sendReply('User ' + targetUser + ' has too many tells queued.');
 
 		var date = Date();
-		var message = '|raw|' + date.substring(0, date.indexOf('GMT') - 1) + ' - <b>' + user.getIdentity() + '</b> said: ' + sanitize(targets[1].trim());
+		var message = '|raw|' + date.substring(0, date.indexOf('GMT') - 1) + ' - <b>' + user.getIdentity() + '</b> said: ' + Tools.escapeHTML(targets[1].trim());
 		tells[targetUser].add(message);
 
 		return this.sendReply('Message "' + targets[1].trim() + '" sent to ' + targetUser + '.');
@@ -2268,7 +2268,7 @@ var commands = exports.commands = {
 		if (!room.modchat) {
 			this.add("|raw|<div class=\"broadcast-blue\"><b>Moderated chat was disabled!</b><br />Anyone may talk now.</div>");
 		} else {
-			var modchat = sanitize(room.modchat);
+			var modchat = Tools.escapeHTML(room.modchat);
 			this.add("|raw|<div class=\"broadcast-red\"><b>Moderated chat was set to " + modchat + "!</b><br />Only users of rank " + modchat + " and higher can talk.</div>");
 		}
 		this.logModCommand(user.name + " set modchat to " + room.modchat);
@@ -2285,7 +2285,7 @@ var commands = exports.commands = {
 
 		if (!this.canTalk()) return;
 
-		this.add('|raw|<div class="broadcast-blue"><b>' + sanitize(target) + '</b></div>');
+		this.add('|raw|<div class="broadcast-blue"><b>' + Tools.escapeHTML(target) + '</b></div>');
 		this.logModCommand(user.name + " declared " + target);
 	},
 

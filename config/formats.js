@@ -148,13 +148,6 @@ exports.Formats = [
 		banlist: ['UU', 'BL2']
 	},
 	{
-		name: "NU (beta)",
-		section: "XY Singles",
-
-		ruleset: ['RU'],
-		banlist: ['RU', 'BL3']
-	},
-	{
 		name: "LC",
 		section: "XY Singles",
 
@@ -382,6 +375,13 @@ exports.Formats = [
 		banlist: ['Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite', 'Lucarionite', 'Swagger']
 	},
 	{
+		name: "NU (alpha)",
+		section: "Other Metagames",
+
+		ruleset: ['RU (beta)'],
+		banlist: ['RU', 'BL3']
+	},
+	{
 		name: "Challenge Cup",
 		section: "Other Metagames",
 
@@ -435,7 +435,8 @@ exports.Formats = [
 		name: "OU Monotype",
 		section: "Other Metagames",
 
-		ruleset: ['OU', 'Same Type Clause']
+		ruleset: ['OU', 'Same Type Clause'],
+		banlist: ['Talonflame']
 	},
 	{
 		name: "Sky Battles",
