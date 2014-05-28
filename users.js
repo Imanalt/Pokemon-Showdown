@@ -107,7 +107,7 @@ function can(group, permission, targetGroup, room, isSelf) {
 		if (checkedGroups[group]) return false;
 		checkedGroups[group] = true;
 
-		if (groupData[permission]) {
+		if (permission in groupData) {
 			var jurisdiction = groupData[permission];
 			if (!targetGroup) {
 				return !!jurisdiction;
@@ -588,9 +588,7 @@ var User = (function () {
 			name = Config.nameFilter(name);
 		}
 		name = toName(name);
-		while (!/[A-Za-z0-9]/.test(name.charAt(0))) {
-			name = name.substr(1);
-		}
+		name = name.replace(/^[^A-Za-z0-9]+/, "");
 		return name;
 	};
 	/**

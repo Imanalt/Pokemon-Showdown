@@ -1857,9 +1857,7 @@ var commands = exports.commands = {
 
 		target = this.splitTarget(target);
 		var targetUser = this.targetUser;
-		if (!targetUser || !targetUser.connected) {
-			return this.sendReply("User " + this.targetUsername + " not found.");
-		}
+		if (!targetUser || !targetUser.connected) return this.sendReply("User '" + this.targetUsername + "' does not exist.");
 		if (room.auth) {
 			return this.sendReply("You can't warn here: This is a unofficial room not subject to global rules.");
 		}
@@ -1904,9 +1902,7 @@ var commands = exports.commands = {
 
 		target = this.splitTarget(target);
 		var targetUser = this.targetUser;
-		if (!targetUser) {
-			return this.sendReply("User " + this.targetUsername + " not found.");
-		}
+		if (!targetUser) return this.sendReply("User '" + this.targetUsername + "' does not exist.");
 		if (target.length > MAX_REASON_LENGTH) {
 			return this.sendReply("The reason is too long. It cannot exceed " + MAX_REASON_LENGTH + " characters.");
 		}
@@ -1934,9 +1930,7 @@ var commands = exports.commands = {
 
 		target = this.splitTarget(target);
 		var targetUser = this.targetUser;
-		if (!targetUser) {
-			return this.sendReply("User " + this.targetUsername + " not found.");
-		}
+		if (!targetUser) return this.sendReply("User '" + this.targetUsername + "' does not exist.");
 		if (target.length > MAX_REASON_LENGTH) {
 			return this.sendReply("The reason is too long. It cannot exceed " + MAX_REASON_LENGTH + " characters.");
 		}
@@ -1960,13 +1954,11 @@ var commands = exports.commands = {
 	unmute: function (target, room, user) {
 		if (!target) return this.parse('/help unmute');
 		var targetUser = Users.get(target);
-		if (!targetUser) {
-			return this.sendReply("User " + target + " not found.");
-		}
+		if (!targetUser) return this.sendReply("User '" + target + "' does not exist.");
 		if (!this.can('mute', targetUser, room)) return false;
 
 		if (!targetUser.mutedRooms[room.id]) {
-			return this.sendReply("" + targetUser.name + " isn't muted.");
+			return this.sendReply("" + targetUser.name + " is not muted.");
 		}
 
 		this.addModCommand("" + targetUser.name + " was unmuted by " + user.name + ".");
@@ -1981,9 +1973,7 @@ var commands = exports.commands = {
 
 		target = this.splitTarget(target);
 		var targetUser = this.targetUser;
-		if (!targetUser) {
-			return this.sendReply("User " + this.targetUser + " not found.");
-		}
+		if (!targetUser) return this.sendReply("User '" + this.targetUsername + "' does not exist.");
 		if (target.length > MAX_REASON_LENGTH) {
 			return this.sendReply("The reason is too long. It cannot exceed " + MAX_REASON_LENGTH + " characters.");
 		}
@@ -2016,7 +2006,7 @@ var commands = exports.commands = {
 				((names.length > 1) ? "were" : "was") +
 				" unlocked by " + user.name + ".");
 		} else {
-			this.sendReply("User " + target + " is not locked.");
+			this.sendReply("User '" + target + "' is not locked.");
 		}
 	},
 
@@ -2027,9 +2017,7 @@ var commands = exports.commands = {
 
 		target = this.splitTarget(target);
 		var targetUser = this.targetUser;
-		if (!targetUser) {
-			return this.sendReply("User " + this.targetUsername + " not found.");
-		}
+		if (!targetUser) return this.sendReply("User '" + this.targetUsername + "' does not exist.");
 		if (target.length > MAX_REASON_LENGTH) {
 			return this.sendReply("The reason is too long. It cannot exceed " + MAX_REASON_LENGTH + " characters.");
 		}
@@ -2067,7 +2055,7 @@ var commands = exports.commands = {
 		if (name) {
 			this.addModCommand("" + name + " was unbanned by " + user.name + ".");
 		} else {
-			this.sendReply("User " + target + " is not banned.");
+			this.sendReply("User '" + target + "' is not banned.");
 		}
 	},
 
@@ -2154,7 +2142,7 @@ var commands = exports.commands = {
 	 *********************************************************/
 
 	modnote: function (target, room, user, connection, cmd) {
-		if (!target) return this.parse('/help note');
+		if (!target) return this.parse('/help modnote');
 		if (target.length > MAX_REASON_LENGTH) {
 			return this.sendReply("The note is too long. It cannot exceed " + MAX_REASON_LENGTH + " characters.");
 		}
@@ -2336,22 +2324,18 @@ var commands = exports.commands = {
 	fr: 'forcerename',
 	forcerename: function (target, room, user) {
 		if (!target) return this.parse('/help forcerename');
-		target = this.splitTarget(target);
+		target = this.splitTarget(target, true);
 		var targetUser = this.targetUser;
 		if (!targetUser) {
-			return this.sendReply("User " + this.targetUsername + " not found.");
+			return this.sendReply("User '" + this.targetUsername + "' was not found or had already changed its name.");
 		}
 		if (!this.can('forcerename', targetUser)) return false;
 
-		if (targetUser.userid === toId(this.targetUser)) {
-			var entry = targetUser.name + " was forced to choose a new name by " + user.name + (target ? ": " + target: "");
-			this.privateModCommand("(" + entry + ")");
-			Rooms.global.cancelSearch(targetUser);
-			targetUser.resetName();
-			targetUser.send("|nametaken||" + user.name + " has forced you to change your name. " + target);
-		} else {
-			this.sendReply("User " + targetUser.name + " is no longer using that name.");
-		}
+		var entry = targetUser.name + " was forced to choose a new name by " + user.name + (target ? ": " + target: "");
+		this.privateModCommand("(" + entry + ")");
+		Rooms.global.cancelSearch(targetUser);
+		targetUser.resetName();
+		targetUser.send("|nametaken||" + user.name + " has forced you to change your name. " + target);
 	},
 
 	modlog: function (target, room, user, connection) {
