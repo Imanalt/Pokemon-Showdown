@@ -2084,48 +2084,6 @@ var commands = exports.commands = {
 		this.addModCommand("All bans and locks have been lifted by " + user.name + ".");
 	},
 
-	pban: 'permaban',
-	permban: 'permaban',
-	permaban: function(target, room, user) {
-		if (!target) return this.sendReply('/permaban [username] - Permanently bans the user from the server. Bans placed by this command do not reset when the server restarts.');
-		if (!this.can('permaban', targetUser)) return this.sendReply('Access denied.');
-		target = this.splitTarget(target);
-		var targetUser = this.targetUser;
-		if (!targetUser) {
-			return this.sendReply('User '+this.targetUsername+' not found.');
-		}
-		if (Users.checkBanned(targetUser.latestIp) && !target && !targetUser.connected) {
-			var problem = ' but was already banned';
-			return this.privateModCommand('('+targetUser.name+' would be banned by '+user.name+problem+'.)');
-		}
-		var self = this;
-		fs.appendFile('config/ipbans.txt','\n'+targetUser.latestIp, function(err) {
-			if (err) {
-				self.sendReply('Uh oh! An error has occurred!');
-				console.log('/permaban crashed: '+err.stack);
-				return false;
-			}
-			targetUser.popup(user.name+" has permanently banned you. " + (target ? " (" + target + ")" : ""));
-			self.addModCommand(targetUser.name+" was permanently banned by "+user.name+"."+ (target ? " (" + target + ")" : ""), ' ('+targetUser.latestIp+')');
-			targetUser.ban();
-		});
-	},
-
-	unpermaban: function(target, room, user) {
-		if (!target) return this.sendReply('/unpermaban [IP] - Removes a permanent ban.');
-		if (!this.can('permaban')) return this.sendReply('Access denied.');
-		var self = this;
-		removeIpBan(target, function (found) {
-			if (found) {
-				self.privateModCommand('('+target+' was removed from the permanent ban list by '+user.name+'.)');
-				return;
-			} else {
-				self.sendReply(target+' was not found on the permanent ban list.');
-				return;
-			}
-		});
-	},
-
 	banip: function (target, room, user) {
 		if (user.locked || user.mutedRooms[room.id]) return this.sendReply("You cannot do this while unable to talk.");
 		target = target.trim();
