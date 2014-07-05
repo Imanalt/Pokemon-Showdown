@@ -214,12 +214,13 @@ exports.BattleAliases = {
 	"poryz": "Porygon-Z",
 	"rank": "Reuniclus",
 	"skarm": "Skarmory",
+	"smogon": "Koffing",
 	"talon": "Talonflame",
 	"terra": "Terrakion",
 	"ttar": "Tyranitar",
 	"volc": "Volcarona",
 	"zam": "Alakazam",
-	
+
 	// moves
 	"bpass": "Baton Pass",
 	"cc": "Close Combat",
