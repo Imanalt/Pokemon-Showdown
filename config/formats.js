@@ -121,14 +121,6 @@ exports.Formats = [
 		banlist: ['Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite', 'Lucarionite']
 	},
 	{
-		name: "OU (suspect test)",
-		section: "XY Singles",
-
-		challengeShow: false,
-		ruleset: ['Pokemon', 'Standard', 'Team Preview', 'Swagger Clause', 'Baton Pass Clause'],
-		banlist: ['Uber', 'Soul Dew', 'Gengarite', 'Kangaskhanite', 'Lucarionite']
-	},
-	{
 		name: "OU Monotype",
 		section: "XY Singles",
 
@@ -384,6 +376,21 @@ exports.Formats = [
 		ruleset: ['Team Preview']
 	},
 
+	// XY Triples
+	///////////////////////////////////////////////////////////////////
+
+	{
+		name: "Triples Custom Game",
+		section: "XY Triples",
+
+		gameType: 'triples',
+		searchShow: false,
+		maxLevel: 9999,
+		defaultLevel: 100,
+		debug: true,
+		ruleset: ['Team Preview']
+	},
+
 	// Other Metagames
 	///////////////////////////////////////////////////////////////////
 
@@ -392,7 +399,7 @@ exports.Formats = [
 		section: "OM of the Month",
 
 		ruleset: ['OU'],
-		banlist: ['Clefable', 'Abomasite', 'Mawilite', 'Medichamite', 'Huge Power', 'Pure Power'],
+		banlist: ['Clefable', 'Kingdra', 'Venomoth', 'Abomasite', 'Mawilite', 'Medichamite', 'Huge Power', 'Pure Power'],
 		validateSet: function (set) {
 			var template = this.getTemplate(set.species || set.name);
 			for (var stat in template.baseStats) {
@@ -595,8 +602,7 @@ exports.Formats = [
 		searchShow: false,
 		mimicGlitch: true,
 		ruleset: ['Pokemon', 'Team Preview', 'HP Percentage Mod'],
-		banlist: ['Illegal', 'Unreleased'],
-		mimicGlitch: true
+		banlist: ['Illegal', 'Unreleased']
 	},
 	{
 		name: "[Gen 5] PU",

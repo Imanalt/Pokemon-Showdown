@@ -188,6 +188,7 @@ exports.BattleAliases = {
 	"crumblerfriendchesnot": "Chesnaught",
 	"dnite": "Dragonite",
 	"don": "Groudon",
+	"dogars": "Koffing",
 	"ferro": "Ferrothorn",
 	"forry": "Forretress",
 	"gar": "Gengar",
