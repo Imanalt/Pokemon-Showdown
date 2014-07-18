@@ -40,6 +40,302 @@ if (typeof tells === 'undefined') {
 const MAX_REASON_LENGTH = 300;
 
 var commands = exports.commands = {
+	/*********************************************************
+	 * Money and Shop                                     
+	 *********************************************************/
+	
+	wallet: 'money',
+	money: function(target, room, user, connection, cmd) {
+		if (!this.canBroadcast()) return;
+		var broadcasting = false;
+		if (this.broadcasting) broadcasting = true;
+		var data = '';
+		if (!target) {
+			var money = readMoney('money', user.userid);
+			data += user.name + ' has '+money+' bucks.<br />';
+		} else {
+			target = this.splitTarget(target);
+			var targetUser = this.targetUser;
+			var money = readMoney('money', targetUser.userid);
+			data += targetUser.name+' has '+money+' bucks.<br />';
+		}
+		return this.sendReplyBox(data);
+	},
+	
+	gb: 'givebucks',
+	givebucks: function(target, room, user) {
+		if(!user.can('hotpatch')) return this.sendReply('You do not have enough authority to do this.');
+		if(!target) return this.parse('/help givebucks');
+		if (target.indexOf(',') != -1) {
+			var parts = target.split(',');
+			parts[0] = this.splitTarget(parts[0]);
+			var targetUser = this.targetUser;
+			if (!targetUser) {
+				return this.sendReply('User '+this.targetUsername+' not found.');
+			}
+			if (isNaN(parts[1])) {
+				return this.sendReply('Very funny, now use a real number.');
+			}
+			var cleanedUp = parts[1].trim();
+			var giveMoney = Number(cleanedUp);
+			var amount = writeMoney('money', targetUser.userid, giveMoney);
+			var noun = 'bucks';
+			if (giveMoney === 1) {
+				noun = 'buck';
+			}
+			targetUser.send('|popup|You were given '+giveMoney+' '+noun+' by '+user.name+'. You now have '+amount+' '+noun+'.');
+			this.sendReply('You gave '+targetUser.name+' '+giveMoney+' '+noun+'. They now have '+amount+' '+noun+'.');
+		} else {
+			return this.parse('/help givebucks');
+		}
+	},
+
+	tb: 'takebucks',
+	takebucks: function(target, room, user) {
+		if(!user.can('hotpatch')) return this.sendReply('You do not have enough authority to do this.');
+		if(!target) return this.parse('/help takebucks');
+		if (target.indexOf(',') != -1) {
+			var parts = target.split(',');
+			parts[0] = this.splitTarget(parts[0]);
+			var targetUser = this.targetUser;
+			if (!targetUser) {
+				return this.sendReply('User '+this.targetUsername+' not found.');
+			}
+			if (isNaN(parts[1])) {
+				return this.sendReply('Very funny, now use a real number.');
+			}
+			var cleanedUp = parts[1].trim();
+			var takeMoney = Number(cleanedUp);
+			takeMoney = takeMoney * -1;
+			var amount = writeMoney('money', targetUser.userid, takeMoney);
+			var noun = 'bucks';
+			if (takeMoney * -1 === 1) {
+				noun = 'buck';
+			}
+			targetUser.send('|popup|'+user.name+' has taken '+(takeMoney*-1)+' '+noun+' from you. You now have '+amount+' bucks.');
+			this.sendReply('You have taken '+(takeMoney*-1)+' '+noun+' from '+targetUser.name+'. They now have '+amount+' bucks.');		
+		} else {
+			return this.parse('/help removebucks');
+		}
+	},
+
+	buy: function(target, room, user, connection) {
+		if (!target) return this.parse('/help buy');
+		var target2 = target;
+		target = target.split(', ');
+		var avatar = '';
+		var amount = readMoney('money', user.userid);
+		user.money = amount;
+		var price = 0;
+		if (target2 === 'symbol') {
+			price = 5;
+			if (price <= user.money) {
+				user.money = user.money - price;
+				this.sendReply('You have purchased a custom symbol. You will have this until you log off for more than an hour.');
+				this.sendReply('Use /customsymbol [symbol] to change your symbol now!');
+				user.canCustomSymbol = true;
+				this.add(user.name + ' has purchased a custom symbol!');
+			} else {
+				return this.sendReply('You do not have enough bucks for this. You need ' + (price - user.money) + ' more bucks to buy ' + target + '.');
+			}
+		}
+		if (target[0] === 'custom') {
+			price = 20;
+			if (price <= user.money) {
+				if (!target[1]) return this.sendReply('Please specify the avatar you would like you buy. It has a maximum size of 80x80 and must be in .png format. ex: /buy custom, [url to the avatar]');
+       				var filename = target[1].split('.');
+				filename = '.'+filename.pop();
+				if (filename != ".png") return this.sendReply('Your avatar must be in .png format.');
+				user.money = user.money - price;
+				this.sendReply('You have purchased a custom avatar. Staff have been notified and it will be added in due time.');
+				user.canCustomAvatar = true;
+				Rooms.rooms.staff.add(user.name+' has purchased a custom avatar. Image: '+target[1]);
+				for (var u in Users.users) {
+					if (Users.users[u].group == "~" || Users.users[u].group == "&") {
+						Users.users[u].send('|pm|~Server|'+Users.users[u].group+Users.users[u].name+'|'+user.name+' has purchased a custom avatar. Image: '+target[1]);
+					}
+				}
+			} else {
+				return this.sendReply('You do not have enough bucks for this. You need ' + (price - user.money) + ' more bucks to buy ' + target + '.');
+			}
+		}
+		if (target[0] === 'animated') {
+			price = 35;
+			if (price <= user.money) {
+				if (!target[1]) return this.sendReply('Please specify the avatar you would like you buy. It has a maximum size of 80x80 and must be in .gif format. ex: /buy animated, [url to the avatar]');
+       				var filename = target[1].split('.');
+				filename = '.'+filename.pop();
+				if (filename != ".gif") return this.sendReply('Your avatar must be in .gif format.');
+				user.money = user.money - price;
+				this.sendReply('You have purchased a custom animated avatar. Staff have been notified and it will be added in due time.');
+				user.canAnimatedAvatar = true;
+				Rooms.rooms.staff.add(user.name+' has purchased a custom animated avatar. Image: '+target[1]);
+				for (var u in Users.users) {
+					if (Users.users[u].group == "~" || Users.users[u].group == "&") {
+						Users.users[u].send('|pm|~Server|'+Users.users[u].group+Users.users[u].name+'|'+user.name+' has purchased a custom animated avatar. Image: '+target[1]);
+					}
+				}
+			} else {
+				return this.sendReply('You do not have enough bucks for this. You need ' + (price - user.money) + ' more bucks to buy ' + target + '.');
+			}
+		}
+		if (target[0] === 'room') {
+			price = 100;
+			if (price <= user.money) {
+				user.money = user.money - price;
+				this.sendReply('You have purchased a chat room. You need to message an Admin so that the room can be made.');
+				user.canChatRoom = true;
+				this.add(user.name + ' has purchased a chat room!');
+			} else {
+				return this.sendReply('You do not have enough bucks for this. You need ' + (price - user.money) + ' more bucks to buy ' + target + '.');
+			}
+		}
+		if (target2 === 'trainer') {
+			price = 40;
+			if (price <= user.money) {
+				user.money = user.money - price;
+				this.sendReply('You have purchased a trainer card. You need to message an Admin capable of adding this (Frost Deverloper or BrittleWind).');
+				user.canTrainerCard = true;
+				this.add(user.name + ' has purchased a trainer card!');
+			} else {
+				return this.sendReply('You do not have enough bucks for this. You need ' + (price - user.money) + ' more bucks to buy ' + target + '.');
+			}
+		}
+		if (target2 === 'fix') {
+			price = 10;
+			if (price <= user.money) {
+				user.money = user.money - price;
+				this.sendReply('You have purchased the ability to alter your avatar or trainer card. You need to message an Admin capable of adding this.');
+				user.canFixItem = true;
+				this.add(user.name + ' has purchased the ability to set alter their card or avatar!');
+			} else {
+				return this.sendReply('You do not have enough bucks for this. You need ' + (price - user.money) + ' more bucks to buy ' + target + '.');
+			}
+		}
+		if (target2 === 'declare') {
+			price = 25;
+			if (price <= user.money) {
+				user.money = user.money - price;
+				this.sendReply('You have purchased the ability to declare (from Admin). To do this message an Admin (~) with the message you want to send. Keep it sensible!');
+				user.canDecAdvertise = true;
+				this.add(user.name + ' has purchased the ability to declare from an Admin!');
+			} else {
+				return this.sendReply('You do not have enough bucks for this. You need ' + (price - user.money) + ' more bucks to buy ' + target + '.');
+			}
+		}
+		writeMoney('money', user.userid, -price);
+		this.sendReply('You have ' + user.money + ' bucks left.');
+	},
+	
+	customsymbol: function(target, room, user) {
+		if(!user.canCustomSymbol) return this.sendReply('You need to buy this item from the shop to use it.');
+		if(!target || target.length > 1) return this.sendReply('/customsymbol [symbol] - changes your symbol (usergroup) to the specified symbol. The symbol can only be one character');
+		var a = target;
+		if (a === "+" || a === "$" || a === "%" || a === "@" || a === "&" || a === "~" || a === "#" || a === "a" || a === "b" || a === "c" || a === "d" || a === "e" || a === "f" || a === "g" || a === "h" || a === "i" || a === "j" || a === "k" || a === "l" || a === "m" || a === "n" || a === "o" || a === "p" || a === "q" || a === "r" || a === "s" || a === "t" || a === "u" || a === "v" || a === "w" || a === "x" || a === "y" || a === "z" || a === "0" || a === "1" || a === "2" || a === "3" || a === "4" || a === "5" || a === "6" || a === "7" || a === "8" || a === "9" ) {
+			return this.sendReply('Sorry, but you cannot change your symbol to this for safety/stability reasons.');
+		}
+		user.getIdentity = function(){
+			if(this.muted)	return '!' + this.name;
+			if(this.locked) return 'â€½' + this.name;
+			return target + this.name;
+		};
+		user.updateIdentity();
+		user.canCustomSymbol = false;
+		user.hasCustomSymbol = true;
+	},
+	
+	shop: function(target, room, user) {
+		if (!this.canBroadcast()) return;
+		this.sendReplyBox('<center><h4><b><u>Amethyst Shop</u></b></h4><table border="1" cellspacing ="0" cellpadding="3"><tr><th>Command</th><th>Description</th><th>Cost</th></tr>' +
+			'<tr><td>Symbol</td><td>Buys a custom symbol to go infront of name and puts you at top of userlist (temporary until restart)</td><td>5</td></tr>' +
+			'<tr><td>Custom</td><td>Buys a custom avatar to be applied to your name (you supply)</td><td>20</td></tr>' +
+			'<tr><td>Animated</td><td>Buys an animated avatar to be applied to your name (you supply)</td><td>35</td></tr>' +
+			'<tr><td>Room</td><td>Buys a chatroom for you to own (within reason, can be refused)</td><td>100</td></tr>' +
+			'<tr><td>Trainer</td><td>Buys a trainer card which shows information through a command</td><td>40</td></tr>' +
+			'<tr><td>Fix</td><td>Buys the ability to alter your current custom avatar or trainer card (don\'t buy if you have neither)!</td><td>10</td></tr>' +
+			'<tr><td>Declare</td><td>You get the ability to get two declares from an Admin in lobby. This can be used for league advertisement (not server)</td><td>25</td></tr>' +
+			'</table><br />To buy an item from the shop, use /buy [command].</center>');
+		if (closeShop) return this.sendReply('|raw|<center><h3><b>The shop is currently closed and will open shortly.</b></h3></center>');
+	},
+
+	removeitem: function(target, room, user) {
+		if (!target) return this.parse('/help removeitem');
+		if(!user.can('hotpatch')) return this.sendReply('You do not have enough authority to do this.');
+
+		target = this.splitTarget(target);
+		var targetUser = this.targetUser;
+
+		if (!target) return this.parse('/help removeitem');
+		if (!targetUser) {
+			return this.sendReply('User '+this.targetUsername+' not found.');
+		}
+
+		if (target === 'symbol') {
+			if (targetUser.canCustomSymbol) {
+				targetUser.canCustomSymbol = false;
+				this.sendReply(targetUser.name + ' no longer has a custom symbol ready to use.');
+				targetUser.send(user.name + ' has removed the custom symbol from you.');
+			}
+			else
+				return this.sendReply('They do not have a custom symbol for you to remove.');
+		}
+		else if (target === 'custom') {
+			if (targetUser.canCustomAvatar) {
+				targetUser.canCustomAvatar = false;
+				this.sendReply(targetUser.name + ' no longer has a custom avatar ready to use.');
+				targetUser.send(user.name + ' has removed the custom avatar from you.');
+			}
+			else
+				return this.sendReply('They do not have a custom avatar for you to remove.');
+		}
+		else if (target === 'animated') {
+			if (targetUser.canAnimatedAvatar) {
+				targetUser.canAnimatedAvatar = false;
+				this.sendReply(targetUser.name + ' no longer has a animated avatar ready to use.');
+				targetUser.send(user.name + ' has removed the animated avatar from you.');
+			}
+			else
+				return this.sendReply('They do not have an animated avatar for you to remove.');
+		}
+		else if (target === 'room') {
+			if (targetUser.canChatRoom) {
+				targetUser.canChatRoom = false;
+				this.sendReply(targetUser.name + ' no longer has a chat room ready to use.');
+				targetUser.send(user.name + ' has removed the chat room from you.');
+			}
+			else
+				return this.sendReply('They do not have a chat room for you to remove.');
+		}
+		else if (target === 'trainer') {
+			if (targetUser.canTrainerCard) {
+				targetUser.canTrainerCard = false;
+				this.sendReply(targetUser.name + ' no longer has a trainer card ready to use.');
+				targetUser.send(user.name + ' has removed the trainer card from you.');
+			}
+			else
+				return this.sendReply('They do not have a trainer card for you to remove.');
+		}
+		else if (target === 'fix') {
+			if (targetUser.canFixItem) {
+				targetUser.canFixItem = false;
+				this.sendReply(targetUser.name + ' no longer has the fix to use.');
+				targetUser.send(user.name + ' has removed the fix from you.');
+			}
+			else
+				return this.sendReply('They do not have a trainer card for you to remove.');
+		}
+		else if (target === 'declare') {
+			if (targetUser.canDecAdvertise) {
+				targetUser.canDecAdvertise = false;
+				this.sendReply(targetUser.name + ' no longer has a declare ready to use.');
+				targetUser.send(user.name + ' has removed the declare from you.');
+			}
+			else
+				return this.sendReply('They do not have a trainer card for you to remove.');
+		}
+		else
+			return this.sendReply('That isn\'t a real item you fool!');
+	},
 
 	friendcode: 'fc',
 	fc: function(target, room, user, connection) {
@@ -3213,4 +3509,61 @@ function removeIpBan(target, callback) {
 		callback(false);
 		return;
 	}
+}
+
+//readMoney and writeMoney functions
+function readMoney(filename, user) {
+	var data = fs.readFileSync('config/'+filename+'.csv', 'utf8');
+	var rows = data.split("\n");
+	var matched = false;
+	for (var i = 0; i < rows.length; i++) {
+		if (!rows[i]) continue;
+		var parts = rows[i].split(",");
+		var userid = toId(parts[0]);
+		if (user === userid) {
+			var matched = true;
+			var amount = Number(parts[1]);
+			break;
+		}
+	}
+	if (matched === true) {
+		return amount;
+	} else {
+		return 0;
+	}
+}
+
+function writeMoney(filename, targetUser, added) {
+	var data = fs.readFileSync('config/'+filename+'.csv', 'utf8');
+	var rows = data.split("\n");
+	var matched = false;
+	var line = '';
+	for (var i = 0; i < rows.length; i++) {
+		if (!rows[i]) continue;
+		var parts = rows[i].split(",");
+		var userid = toId(parts[0]);
+		if (targetUser === userid) {
+			var matched = true;
+			var amount = Number(parts[1]);
+			line += rows[i];
+			break;
+		}
+	}
+	amount += added;
+	if (matched === true) {
+		var re = new RegExp(line,"g");
+		fs.readFile('config/'+filename+'.csv', 'utf8', function (err,data) {
+			if (err) {
+				return console.log(err);
+			}
+			var result = data.replace(re, Users.get(targetUser).userid+','+amount);
+			fs.writeFile('config/'+filename+'.csv', result, 'utf8', function (err) {
+				if (err) return console.log(err);
+			});
+		});
+	} else {
+		var log = fs.createWriteStream('config/'+filename+'.csv', {'flags': 'a'});
+		log.write("\n"+Users.get(targetUser).userid+','+amount);
+	}
+	return amount;
 }
