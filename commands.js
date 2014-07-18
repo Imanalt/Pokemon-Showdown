@@ -45,6 +45,7 @@ var commands = exports.commands = {
 	 *********************************************************/
 	
 	wallet: 'money',
+	atm: 'money',
 	money: function(target, room, user, connection, cmd) {
 		if (!this.canBroadcast()) return;
 		var broadcasting = false;
@@ -52,12 +53,15 @@ var commands = exports.commands = {
 		var data = '';
 		if (!target) {
 			var money = readMoney('money', user.userid);
-			data += user.name + ' has '+money+' bucks.<br />';
+			var noun = money > 1 ? 'bucks' : 'buck';
+			data += user.name + ' has '+money+' '+noun+'.<br />';
 		} else {
 			target = this.splitTarget(target);
 			var targetUser = this.targetUser;
 			var money = readMoney('money', targetUser.userid);
-			data += targetUser.name+' has '+money+' bucks.<br />';
+			var noun = money > 1 ? 'bucks' : 'buck';
+			data += targetUser.name+' has '+money+' '+noun+'.<br />';
+		
 		}
 		return this.sendReplyBox(data);
 	},
@@ -79,10 +83,7 @@ var commands = exports.commands = {
 			var cleanedUp = parts[1].trim();
 			var giveMoney = Number(cleanedUp);
 			var amount = writeMoney('money', targetUser.userid, giveMoney);
-			var noun = 'bucks';
-			if (giveMoney === 1) {
-				noun = 'buck';
-			}
+			var noun = giveMoney === 1 ? 'buck' : 'bucks';
 			targetUser.send('|popup|You were given '+giveMoney+' '+noun+' by '+user.name+'. You now have '+amount+' '+noun+'.');
 			this.sendReply('You gave '+targetUser.name+' '+giveMoney+' '+noun+'. They now have '+amount+' '+noun+'.');
 		} else {
@@ -108,10 +109,8 @@ var commands = exports.commands = {
 			var takeMoney = Number(cleanedUp);
 			takeMoney = takeMoney * -1;
 			var amount = writeMoney('money', targetUser.userid, takeMoney);
-			var noun = 'bucks';
-			if (takeMoney * -1 === 1) {
-				noun = 'buck';
-			}
+			var noun = takeMoney * -1 === 1 ? 'buck' : 'bucks';
+			
 			targetUser.send('|popup|'+user.name+' has taken '+(takeMoney*-1)+' '+noun+' from you. You now have '+amount+' bucks.');
 			this.sendReply('You have taken '+(takeMoney*-1)+' '+noun+' from '+targetUser.name+'. They now have '+amount+' bucks.');		
 		} else {
@@ -952,360 +951,6 @@ var commands = exports.commands = {
 		this.add('|unlink|' + targetUser.userid);
 		return this.privateModCommand('|html|(' + user.name + ' has made <font color="red">' +this.targetUsername+ '</font>\'s prior links unclickable.)');
 	},
-
-	mpea: function(target, room, user) {
-		if (!this.canBroadcast()) return;
-		this.sendReplyBox('<center><img src="http://frostserver.net:8000/images/hellompea.jpg"></center>');
-	},
-
-	kozman: 'koz',
-        koz: function (target, room, user) {
-                if (!this.canBroadcast()) return;
-                this.sendReplyBox('<center>Trainer: <font color="#09B38E"><b>Kozman</b></font><br />' +
-                        '<center>Types: Fighting(OU E4)<br />' +
-                        '<center>Signature Pokemon: <font color="purple"><b>Mienshao</b></font><br />' +
-                        '<center>Everyone has an inner Amethyst... You just need to unlock it.<br />' +
-                        '<center><img src="http://www.smogon.com/download/sprites/bwmini/620.gif">');
-        },
-
-        saira: function (target, room, user) {
-                 if (!this.canBroadcast()) return;
-                 this.sendReplyBox('<center>Trainer: <font color="#986C1B"><b>saira</b></font><br />' +
-                           '<center>Types: Psychic(OU)<br />' +
-                           '<center>I\'m Miss sugar pink liquor liquor lips, hit me with your sweet love, steal me with a kiss <br />' +
-                           '<center>Signature Pokemon: <font color="#C11FA9"><b>Mew</b></font><br />' +
-                           '<center><img src="http://www.smogon.com/download/sprites/bwmini/151.gif">');
-        },
-
-        ross: 'zuku',
-        zuku: function (target, room, user) {
-                if (!this.canBroadcast()) return;
-                this.sendReplyBox ('<center>Trainer:<font color="#9A9C26"><b>Zukushiku</b></font><br />' +
-                   //'<center>Types: Fairy(OU E4), Dark(UU E4), Rock(RU E4), Grass(NU)<br />' +
-                   '<center>Signature Pokemon: <font color="red"><b>Victini</b></font><br />' +
-                   '<center>I\'ll swallow swords spit up my pride, I follow through again this time. I\'ll be just fine...<br />' +
-                   '<center><img src="http://www.smogon.com/download/sprites/bwmini/494.gif">');
-        },
-
-        nord: function (target, room, user) {
-                if (!this.canBroadcast()) return;
-                this.sendReplyBox ('<center>Trainer: <font color="#1A5370"><b>Nord</b></font><br />' +
-                   '<center>Types: Ice(Former OU E4)<br />' +
-                   '<center>Signature Pokemon: <font color="#6E69D1"><b>Regice</b></font><br />' +
-                   '<center>Fabuuuuuuuuuuuloussssssssssssssss<br />' +
-                   '<center><img src="http://www.smogon.com/download/sprites/bwmini/378.gif">');
-        },
-
-        mizud: function (target, room, user) {
-                if (!this.canBroadcast()) return;
-                this.sendReplyBox('<center>Trainer: <font color="#C11FA9"><b>Mizu :D</b></font><br />' +
-                  '<center>Signaute Pokemon: <font color="#C11FA9"><b>Togekiss</b></font><br />' +
-                  '<center>/me glomps jd<br />' +
-                  '<center><img src="http://www.smogon.com/download/sprites/bwmini/468.gif">');
-        },
-
-        miner: function (target, room, user) {
-                if (!this.canBroadcast()) return;
-                this.sendReplyBox ('<center>Trainer:<font color="#750292"><b>Miner0</b></font><br />' +
-                    '<center>Types: Fire(Former OU E4), Flying(Former UU E4),Bug (Former RU E4)<br />' +
-                    '<center>Signature Pokemon: <font color="red"><b>Darmanitan</b></font><br />' +
-                    '<center>It doesn\'t matter on the types in the begining, only the outcome does.<br />' +
-                    '<center><img src="http://www.smogon.com/download/sprites/bwmini/555.gif">');
-        },
-
-        aikenka: 'aik',
-        aik: function(target, room, user) {
-                if (!this.canBroadcast()) return;
-                this.sendReplyBox('<center>Trainer: <font color="#C71A20"><b>Aikenkα</b></font><br />' +
-                                                '<center>Signature Pokemon: <font color="brown"><b>Damion the Dragonite</b></font><br />' +
-                                                '<center>My mom is my inspiration<br />' +
-                                                '<center><img src="http://www.smogon.com/download/sprites/bwmini/149.gif">');
-        },
-
-        boss: function(target, room, user) {
-                if(!this.canBroadcast()) return;
-                this.sendReplyBox('<center>Trainer: <font color="#62DD03"><b>Boss</b></font><br />' +
-                                                '<center>Types: Water(OU E4), Dark(UU)<br />' +
-                                                '<center>Signature Pokemon: <font color="blue"><b>Kingdra</b></font><br />' +
-                                                '<center>The one who is prepared is the one who wins.<br />' +
-                                                '<center><img src="http://www.smogon.com/download/sprites/bwmini/230.gif">');
-        },
-
-        malk: function(target, room, user) {
-                if (!this.canBroadcast()) return;
-                this.sendReplyBox('<center>Trainer: <font color="#B7C21E"><b>Malk</b></font><br />' +
-                                                '<center>Signature Pokemon: <b>Zebstrika</b><br />' +
-                                                '<center>idk about catchphrase though<br />' +
-                                                '<center><img src="http://www.smogon.com/download/sprites/bwmini/523.gif">');
-        },
-
-        mater: function(target, room, user) {
-                if(!this.canBroadcast()) return;
-                this.sendReplyBox('<center>Trainer: <font color="#289F75"><b>Mater9000</b></font><br />' +
-                                                '<center>Signature Pokemon: <b>Linoone</b><br />' +
-                                                '<center>linooooooooooone<br />' +
-                                                '<center><img src="http://www.smogon.com/download/sprites/bwmini/264.gif">');
-        },
-
-        finny: 'god',
-        god: function (target, room, user) {
-                if (!this.canBroadcast()) return;
-                this.sendReplyBox ('<center>Trainer:<font color="#6d2231"><b>Finny</b></font><br />' +
-                                                '<center>Signature Pokemon: <font color="#40e0d0"><b>Mega Manectric</b></font><br />' +
-                                                '<center> I hate everything and everything hates me, fair deal.<br />' +
-                                                '<center><a href="http://www.youtube.com/watch?v=j-kx5YHcLdY">Battle Theme</a><br />' +
-                                                '<center><img src="http://www.smogon.com/download/sprites/bwmini/310.gif">');
-        },
-
-
-
-        skymin: 'sky',
-        sky: function (target, room, user) {
-                if (!this.canBroadcast()) return;
-                this.sendReplyBox ('<center>Trainer:<font color="#199461"><b>Skymin</b></font><br />' +
-                                                '<center>Signature Pokemon: <font color="#3CC977"><b>Shaymin-Sky</b></font><br />' +
-                                                '<center> Ha. Get ready, get set, let\'s roll, <br> In steady increase of control, <br> One limit, that\'s time to let go, <br> The end is slow.<br />' +
-                                                '<center><a href="https://www.listenonrepeat.com/watch/?v=e9ZEd5pI-Vk">Battle Theme</a><br />' +
-                                                '<center><a href="http://www.youtube.com/watch?v=dQw4w9WgXcQ"><img src="http://www.smogon.com/download/sprites/bwmini/492-s.gif"></a>');
-        },
-
-        cheese:'platty',
-        platty: function(target, room, user) {
-                if(!this.canBroadcast()) return;
-                this.sendReplyBox('<center>Trainer:<font color="#0772CF"><b>platinumCheesecake</b></font><br />' +
-                                                '<center>Types:Ghost(OU), Poison(NU, RU)<br />' +
-                                                '<center>Signature Pokemon:<font color="green"><b>Lotad</b></font><br />' +
-                                                '<center>wait so i can put anything i want here?<br />' +
-                                                '<center><img src="http://www.smogon.com/download/sprites/bwmini/270.gif">');
-        },
-
-        miloticnob:'nob',
-        nob: function(target, room, user) {
-                if (!this.canBroadcast()) return;
-                this.sendReplyBox('<center>Trainer:<font color="#C11FA9"><b>miloticnob</b></font><br />' +
-                                                '<center>Types: Normal(OU)<br />' +
-                                                '<center>Signature Pokemon:<b>Chatot</b><br />' +
-                                                '<center>aosmexy4lyf<br />' +
-                                                '<center><a href=" https://www.youtube.com/watch?v=xf-QTw615b4&feature=youtu.be&t=38s">Battle Theme</a><br />' +
-                                                '<center><img src="http://www.smogon.com/download/sprites/bwmini/441.gif">');
-        },
-
-        kenchi: function(target, room, user) {
-                if (!this.canBroadcast()) return;
-                this.sendReplyBox('<center>Trainer:<font color="#064579"><b>Kenchi</b></font><br />' +
-                                        '<center>Types: Electric(UU)<br />' +
-                                        '<center>Signature Pokemon: <font color="green"><b>Breloom</b></font><br />' +
-                                        '<center>kek<br />' +
-                                        '<center><img src="http://www.smogon.com/download/sprites/bwmini/286.gif">');
-        },
-
-        kuno: function(target, room, user) {
-                if (!this.canBroadcast()) return;
-                this.sendReplyBox('<center>Trainer: <font color="#666C19"><b>Kunoichi</b></font><br />' +
-                                  '<center>Types: Fairy(OU)<br />' +
-                                  '<center>Signature Pokemon: <font color="#C11FA9"><b>Sylveon</b></font><br />' +
-                                  '<center>Weaklies are stronger than Strongies obv<br />' +
-                                  '<center><img src="http://www.serebii.net/pokedex-xy/icon/700.png">');
-        },
-
-        brook: function(target, room, user) {
-                if (!this.canBroadcast()) return;
-                this.sendReplyBox('<center>Trainer:<font color="#7EC60C"><b>brooksyy</b></font><br />' +
-                                                '<center>Types: Dragon(OU)<br />' +
-                                                '<center>Signature Pokemon: <b>Kyurem-Black</b><br />' +
-                                                '<center>Most beautiful award winner 2014<br />' +
-                                                '<center><img src="http://www.smogon.com/download/sprites/bwmini/646-b.gif">');
-        },
-
-        higglybiggly: 'hb',
-        hb: function(target, room, user) {
-                if (!this.canBroadcast()) return;
-                this.sendReplyBox('<center>Trainer:<font color="#1925A3"><b>higglybiggly</b></font><br />' +
-                                  '<center>Types: Dark(OU E4)<br />' +
-                                  '<center>Signature Pokemon: <font color="red"><b>Bisharp</b></font><br />' +
-                                  '<center>when the going gets tough the tough get going<br />' +
-                                  '<center><img src="http://www.smogon.com/download/sprites/bwmini/625.gif">');
-        },
-
-        coolasian: 'ca',
-        ca: function(target, room, user) {
-                if(!this.canBroadcast()) return;
-                this.sendReplyBox('<center>Trainer:<font color="#2D2BAB"><b>CoolAsian</b></font><br />' +
-                                                '<center>Types: Poison(OU)<br />' +
-                                                '<center>Signature Pokemon: <font color="purple"><b>Gengar</b></font><br />' +
-                                                '<center> Despair to the creeping horror of Poison-Type Pokemon!<br />' +
-                                                '<center><a href="http://www.youtube.com/watch?v=1-0xgKGlMTg&feature=youtu.be">Battle Theme</a><br />' +
-                                                '<center><img src="http://www.smogon.com/download/sprites/bwmini/94.gif">');
-        },
-
-        pierce: function(target, room, user) {
-                if(!this.canBroadcast()) return;
-                this.sendReplyBox('<center>Trainer:<font color="#C51BC0"><b>GymLe@derTouchMe</b></font><br />' +
-                                                 '<center>Types: Water(OU)<br />' +
-                                                 '<center>Signature Pokemon:<font color="#E8E23A"><b>Magikarp</b></font><br />' +
-                                                 '<center>YOU AINT GOT NO PANCAKE MIX!<br />' +
-                                                 '<center><img src="http://www.smogon.com/download/sprites/bwmini/129.gif">');
-        },
-
-        umbreon: function(target, room, user) {
-                if(!this.canBroadcast()) return;
-                this.sendReplyBox('<center>Trainer:<font color="#0DD3A5"><b>TrainerUmbreon</b></font><br />' +
-                                                '<center>Signature Pokemon:<b>Umbreon</b>' +
-                                                '<center>Roar :)<br />' +
-                                                '<center><img src="http://www.smogon.com/download/sprites/bwmini/197.gif">');
-        },
-
-        smelly: function (target, room, user) {
-                if (!this.canBroadcast()) return;
-                this.sendReplyBox ('<center>Trainer:<font color="#2f651A"><b>mrSmellyfeet100</b></font><br />' +
-                                                '<center>Signature Pokemon: <font color="A19A9A"><b>Aggron-Mega</b></font><br />' +
-                                                '<center>smell ya later!<br />' +
-                                                '<center><img src="http://www.serebii.net/pokedex-xy/icon/306.png">');
-        },
-
-        darkgirafarig: 'dg',
-        dg: function(target, room, user) {
-                if(!this.canBroadcast()) return;
-                this.sendReplyBox('<center>Trainer: <font color="#0C8334"><b>Dark Girafarig</b></font><br />' +
-                                                '<center>Types: Fighting(OU), Water(RU), Psychic(NU E4)<br />' +
-                                                '<center>Signature Pokemon: <font color="#C11FA9"><b>Mew</b></font><br />' +
-                                                '<center>How it all began... and how I\'ll begin again.<br />' +
-                                                '<center><a href="http://www.youtube.com/watch?v=LQ488QrqGE4">Battle Theme</a><br />' +
-                                                '<center><img src="http://www.smogon.com/download/sprites/bwmini/151.gif">');
-
-        },
-
-        sam: function (target, room, user) {
-                if (!this.canBroadcast()) return;
-                this.sendReplyBox('<center>Trainer: <font color="#089D06"><b>Sam</b></font><br />' +
-                                                '<center>Types: Grass(OU)<br />' +
-                                                '<center>Signature Pokemon:<font color="green"><b>Breloom</b></font><br />' +
-                                                '<center>A Thousand Die as a Million are born<br />' +
-                                                '<center><img src="http://www.smogon.com/download/sprites/bwmini/286.gif">');
-        },
-
-        ewok: function (target, room, user) {
-                if (!this.canBroadcast()) return;
-                this.sendReplyBox('<center>Trainer: <font color="#928216"><b>Ewok</b></font><br />' +
-                                                '<center>Types: Fire(OU), Poison(UU)<br />' +
-                                                '<center>Signature Pokemon:<b>Houndoom-Mega</b><br />' +
-                                                '<center>Its better to burn out then fade away<br />' +
-                                                '<center><img src="http://www.serebii.net/pokedex-xy/icon/229.png">');
-        },
-
-        turtlelord: 'tl',
-        tl: function (target, room, user) {
-                if (!this.canBroadcast()) return;
-                this.sendReplyBox('<center>Trainer: <font color="#776C08"><b>The TurtleLord</b></font><br />' +
-                                                '<center>Types: Ground(OU), Water(UU), Flying(RU E4)<br />' +
-                                                '<center>Signature Pokemon: <font color="green"><b>Torterra</b></font><br />' +
-                                                '<center>my turtles will smash yo\' ass<br />' +
-                                                '<center><a href=" https://www.youtube.com/watch?v=xRQnJyP77tY&feature=kp">Battle Theme</a><br />' +
-                                                '<center><a href="https://www.youtube.com/watch?v=bojx9BDpJks"><img src="http://www.smogon.com/download/sprites/bwmini/389.gif"></a>');
-        },
-
-        hope: 'vanitas',
-        vanitas: function(target, room, user) {
-                        if(!this.canBroadcast()) return;
-                        this.sendReplyBox('<center><img src="http://i.imgur.com/EYkBb4N.jpg" width="96" height="96"><img src="http://i.imgur.com/5ZT56ml.png" width="315" height="70"><img src="http://i.imgur.com/mIolDwv.jpg" width="96" height="96"><br><font color=#00BFFF> Ace: Talonflame </font><br> Show me anger <center><a href=" http://www.youtube.com/watch?v=pNq-8IBerXQ">Battle Theme</a><br />');
-        },
-
-        clam: 'hc',
-        bugmaster: 'hc',
-        hc: function(target, room, user) {
-                if(!this.canBroadcast()) return;
-                this.sendReplyBox('<center>Trainer: <font color="#1B7E15"><b>hostageclam</b></font><br />' +
-                                                '<center>Types: Bug(OU, UU, RU, NU)<br />' +
-                                                '<center>Signature Pokemon: <font color="black"><b>Pangoro</b></font><br />' +
-                                                '<center>Get rekt Skrubb<br />' +
-                                                '<center><img src="http://www.serebii.net/pokedex-xy/icon/675.png">');
-        },
-
-        bay: 'badsteel',
-        badsteel: function (target, room, user) {
-                if (!this.canBroadcast()) return;
-                this.sendReplyBox('<center>Trainer: <font color="#1823A5"><b>Bay</b></font>(<font color="#621F75"><b>BadSteel</b></font>)<br />' +
-                                                '<center>Types: Steel(OU)<br />' +
-                                                '<center>Signature Pokemon: <font color="brown"><b>Tauros</b></font><br />' +
-                                                '<center>Wait...who are you?<br />' +
-                                                '<center><a href="https://www.youtube.com/watch?v=ChWK9RcG1gY">Battle Theme</a><br />' +
-                                                '<center><img src="http://play.pokemonshowdown.com/sprites/xyani/tauros.gif" width="45px" height="45px">');
-        },
-
-        nubdove: 'pidove',
-        pidove: function (target, room, user) {
-                if (!this.canBroadcast()) return;
-                this.sendReplyBox('<center>Trainer:<font color="#051694"><b>Pidove</b></font><br />' +
-                                                '<center>Types: Fire(UU), Dragon(NU E4)<br />' +
-                                                '<center>Signature Pokemon:<font color="blue"><b>Greninja</b></font><br />' +
-                                                '<center>:get greninja\'d<br />' +
-                                                '<center><img src="http://www.serebii.net/pokedex-xy/icon/658.png">');
-        },
-
-        solor: function(target, room, user) {
-                if (!this.canBroadcast()) return;
-                this.sendReplyBox('<center>Trainer: <font color="#15A20B"><b>Solor</b></font><br />' +
-                                                '<center>Types: Flying(OU E4), Ice(UU)<br />' +
-                                                '<center>Signature Pokemon: <font color="blue"><b>Gyarados</b></font><br />' +
-                                                '<center>haters gonna hate and twerkers gonna twerk<br />' +
-                                                '<center><img src="http://www.smogon.com/download/sprites/bwmini/130.gif">');
-        },
-
-        qseasons: 'seasons',
-        seasons: function(target, room, user) {
-                if (!this.canBroadcast()) return;
-                this.sendReplyBox('Leader qSeasons!<br>' +
-                                'Type: Everything o3o<br>' +
-                                'He even gets his own shiny badge: <img src = "http://i1305.photobucket.com/albums/s542/TheBattleTowerPS/153_zpsa3af73f7.png"><br>' +
-                                ':D');
-        },
-
-
-        cc: 'crazyclown94',
-        crazyclown: 'crazyclown94',
-        crazyclown94: function(target, room, user) {
-        if (!this.canBroadcast()) return;
-        this.sendReplyBox('<center>Trainer:<font color="#985B06"><b>CrazyClown94</b></font><br />' +
-                                                         '<center>Types: Psychic(UU)<br />' +
-                                                        //'<center>Badge: The Crazy Badge.<br />' +
-                                                         '<center>Signature Pokemon:<font color="red"><b>Medicham</b></font><br />' +
-                                                         '<center>Puppies eat waffles for breakfast<br />' +
-                                                         '<center><a href="http://www.youtube.com/watch?v=Iyv905Q2omU"><img src="http://www.smogon.com/download/sprites/bwmini/308.gif"></a>');
-        },
-
-        energ: 'energ218',
-        lexielover:'energ218',
-        energ218: function(target, room, user) {
-                if (!this.canBroadcast()) return;
-                this.sendReplyBox('<center>Trainer:<font color="#06367F"><b>EnerG218</b></font><br />' +
-                                                '<center>Types: /eval (OU, UU, RU, NU)<br />' +
-                                                '<center>Signature Pokemon: <font color="brown"><b>Buizel</b></font><br />' +
-                                                '<center>kk<br />' +
-                                                '<center><a href="https://www.youtube.com/watch?v=AqPpqALiMMQ"><img src="http://www.smogon.com/download/sprites/bwmini/418.gif"></a>');
-        },
-
-        zact94: 'zac',
-        zac: function(target, room, user) {
-                if(!this.canBroadcast()) return;
-                this.sendReplyBox('<center>Trainer: <font color="#2723A4"><b>ZacT94</b></font><br />' +
-                                                '<center>Types: Normal(RU)<br />' +
-                                                '<center>Signature Pokemon: <font color="#D9D50D"><b>Cofagrigus</b></font><br />' +
-                                                '<center>Damn it my cat won\'t stop walking on my keyboard!<br />' +
-                                                '<center><img src="http://www.smogon.com/download/sprites/bwmini/563.gif">');
-        },
-
-        batman: 'aortega',
-        ao: 'aortega',
-        piiiikalover: 'aortega',
-        pidovelover: 'aortega',
-        aortega: function(target, room, user) {
-                        if(!this.canBroadcast()) return;
-                        this.sendReplyBox('<center>Trainer:<font color="#3B2692"><b>AOrtega</b></font><br />' +
-                                          '<center>Types: Fighting(UU E4)<br />' +
-                                          '<center>Signature Pokemon:<font color="#9C029C"><b>piiiikachuuu</b></font><br />' +
-                                          '<center>252+ SpA Machamp Focus Blast vs. 4 HP / 0 SpD Piiiikachuuu: 238-282 (112.2 - 133%) -- guaranteed OHKO<br />' +
-                                          '<center><img src="http://www.smogon.com/download/sprites/bwmini/25.gif">');
-        },
 
 	league: 'leagueintro',
 	leagueintro: function(target, room, user) {
@@ -3408,6 +3053,7 @@ function writeMoney(filename, targetUser, added) {
 		});
 	} else {
 		var log = fs.createWriteStream('config/'+filename+'.csv', {'flags': 'a'});
+		amount = added;
 		log.write("\n"+Users.get(targetUser).userid+','+amount);
 	}
 	return amount;
