@@ -41,9 +41,9 @@ const MAX_REASON_LENGTH = 300;
 
 var commands = exports.commands = {
 	/*********************************************************
-	 * Money and Shop                                     
+	 * Money and Shop
 	 *********************************************************/
-	
+
 	wallet: 'money',
 	atm: 'money',
 	money: function(target, room, user, connection, cmd) {
@@ -61,11 +61,11 @@ var commands = exports.commands = {
 			var money = readMoney('money', targetUser.userid);
 			var noun = money > 1 ? 'bucks' : 'buck';
 			data += targetUser.name+' has '+money+' '+noun+'.<br />';
-		
+
 		}
 		return this.sendReplyBox(data);
 	},
-	
+
 	gb: 'givebucks',
 	givebucks: function(target, room, user) {
 		if(!user.can('hotpatch')) return this.sendReply('You do not have enough authority to do this.');
@@ -110,9 +110,9 @@ var commands = exports.commands = {
 			takeMoney = takeMoney * -1;
 			var amount = writeMoney('money', targetUser.userid, takeMoney);
 			var noun = takeMoney * -1 === 1 ? 'buck' : 'bucks';
-			
+
 			targetUser.send('|popup|'+user.name+' has taken '+(takeMoney*-1)+' '+noun+' from you. You now have '+amount+' bucks.');
-			this.sendReply('You have taken '+(takeMoney*-1)+' '+noun+' from '+targetUser.name+'. They now have '+amount+' bucks.');		
+			this.sendReply('You have taken '+(takeMoney*-1)+' '+noun+' from '+targetUser.name+'. They now have '+amount+' bucks.');
 		} else {
 			return this.parse('/help removebucks');
 		}
@@ -225,28 +225,33 @@ var commands = exports.commands = {
 		writeMoney('money', user.userid, -price);
 		this.sendReply('You have ' + user.money + ' bucks left.');
 	},
-	
-	customsymbol: function(target, room, user) {
-		if(!user.canCustomSymbol) return this.sendReply('You need to buy this item from the shop to use it.');
-		if(!target || target.length > 1) return this.sendReply('/customsymbol [symbol] - changes your symbol (usergroup) to the specified symbol. The symbol can only be one character');
-		var a = target;
-		if (a === "+" || a === "$" || a === "%" || a === "@" || a === "&" || a === "~" || a === "#" || a === "a" || a === "b" || a === "c" || a === "d" || a === "e" || a === "f" || a === "g" || a === "h" || a === "i" || a === "j" || a === "k" || a === "l" || a === "m" || a === "n" || a === "o" || a === "p" || a === "q" || a === "r" || a === "s" || a === "t" || a === "u" || a === "v" || a === "w" || a === "x" || a === "y" || a === "z" || a === "0" || a === "1" || a === "2" || a === "3" || a === "4" || a === "5" || a === "6" || a === "7" || a === "8" || a === "9" ) {
+
+	customsymbol: function (target, room, user) {
+		if (!user.canCustomSymbol) return this.sendReply('You need to buy this item from the shop to use it.');
+		if (!target || target.length > 1) return this.sendReply('/customsymbol [symbol] - changes your symbol (usergroup) to the specified symbol. The symbol can only be one character');
+		if (toId(target) === target || Config.groups.byRank[target]) {
 			return this.sendReply('Sorry, but you cannot change your symbol to this for safety/stability reasons.');
 		}
-		user.getIdentity = function(){
-			if(this.muted)	return '!' + this.name;
-			if(this.locked) return 'â€½' + this.name;
-			return target + this.name;
+		user.getIdentity = function () {
+			var name = Object.getPrototypeOf(this).getIdentity.call(this);
+			if (name[0] === this.group) return target + name.slice(1);
+			return name;
 		};
 		user.updateIdentity();
 		user.canCustomSymbol = false;
 		user.hasCustomSymbol = true;
 	},
-	
+
+	resetsymbol: function (target, room, user) {
+		delete user.getIdentity;
+		user.updateIdentity();
+		user.hasCustomSymbol = false;
+	},
+
 	shop: function(target, room, user) {
 		if (!this.canBroadcast()) return;
 		this.sendReplyBox('<center><h4><b><u>Amethyst Shop</u></b></h4><table border="1" cellspacing ="0" cellpadding="3"><tr><th>Command</th><th>Description</th><th>Cost</th></tr>' +
-			'<tr><td>Symbol</td><td>Buys a custom symbol to go infront of name and puts you at top of userlist (temporary until restart)</td><td>5</td></tr>' +
+			'<tr><td>Symbol</td><td>Buys a custom symbol to go infront of name and puts you at top of userlist (temporary until logout)</td><td>5</td></tr>' +
 			'<tr><td>Custom</td><td>Buys a custom avatar to be applied to your name (you supply)</td><td>20</td></tr>' +
 			'<tr><td>Animated</td><td>Buys an animated avatar to be applied to your name (you supply)</td><td>35</td></tr>' +
 			'<tr><td>Room</td><td>Buys a chatroom for you to own (within reason, can be refused)</td><td>100</td></tr>' +
