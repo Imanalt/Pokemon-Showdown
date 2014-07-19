@@ -53,13 +53,13 @@ var commands = exports.commands = {
 		var data = '';
 		if (!target) {
 			var money = readMoney('money', user.userid);
-			var noun = money > 1 ? 'bucks' : 'buck';
+			var noun = money === 1 ? 'buck' : 'bucks';
 			data += user.name + ' has '+money+' '+noun+'.<br />';
 		} else {
 			target = this.splitTarget(target);
 			var targetUser = this.targetUser;
 			var money = readMoney('money', targetUser.userid);
-			var noun = money > 1 ? 'bucks' : 'buck';
+			var noun = money === 1 ? 'buck' : 'bucks';
 			data += targetUser.name+' has '+money+' '+noun+'.<br />';
 
 		}
