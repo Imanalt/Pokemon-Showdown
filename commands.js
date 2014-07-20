@@ -50,7 +50,7 @@ var commands = exports.commands = {
 		target = target.split(',');
 		var amountbet = Number(target[0].trim());
 		var roll = Number(target[1].trim());
-		if (!target) return this.sendReply('/gamble [amount],[roll] - Rolls a 12-sided dice. If your roll matches the dice's roll, your betted amount doubles, else, you lose that amount.');
+		if (!target) return this.sendReply('/gamble [amount],[roll] - Rolls a 12-sided dice. If your roll matches the dice\'s roll, your betted amount doubles, else, you lose that amount.');
 		var dice = Math.floor((Math.random()*12)+1);
 		if (amountbet > amount) return this.sendReply('You can not bet more than you have.');
 		if (NaN(amountbet]) || NaN(roll)) return this.sendReply('Funny, now use a number.');
@@ -113,6 +113,21 @@ var commands = exports.commands = {
 		}
 	},
 
+	transferbucks: function(target, room, user) {
+		var amount = readMoney('money', user.userid);
+		if (!target) return this.sendReply('/transferbucks [to], [amount] - Transfers bucks to another user.');
+		var parts = target.split(',');
+		parts[0] = this.splitTarget(parts[0]);
+		var targetUser = this.targetUser;
+		if (NaN(parts[1])) return this.sendReply('Funny, now use a real number.');
+		if (parts[1] > amount) return this.sendReply('You can\'t transfer bucks more than you have.');
+		if (!targetUser) return this.sendReply('User '+this.targetUsername+' not found.');
+		var newamountfrom = writeMoney('money', user.userid, -parts[1]);
+		var newamountto = writeMoney('money', targetUser.userid, parts[1]);
+		return this.sendReply('You have transfered '+parts[1]+' bucks to '+targetUser.name+'. You now have '+newamountfrom+' bucks.');
+		targetUser.send(user.name+' has transfered '+parts[1]+' bucks to you. You now have '+newamountto+' bucks.');
+	},
+	
 	tb: 'takebucks',
 	takebucks: function(target, room, user) {
 		if(!user.can('hotpatch')) return this.sendReply('You do not have enough authority to do this.');
