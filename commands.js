@@ -43,28 +43,7 @@ var commands = exports.commands = {
 	/*********************************************************
 	 * Money and Shop
 	 *********************************************************/
-	 
-	gamble: function(target, room, user) {
-		if (!this.canBroadcast()) return;
-		var amount = readMoney('money', user.userid);
-		target = target.split(',');
-		var amountbet = Number(target[0].trim());
-		var roll = Number(target[1].trim());
-		if (!target) return this.sendReply('/gamble [amount],[roll] - Rolls a 12-sided dice. If your roll matches the dice\'s roll, your betted amount doubles, else, you lose that amount.');
-		var dice = Math.floor((Math.random()*12)+1);
-		if (amountbet > amount) return this.sendReply('You can not bet more than you have.');
-		if (NaN(amountbet) || NaN(roll)) return this.sendReply('Funny, now use a number.');
-		if ( 1 > roll > 12) return this.sendReply('The roll number has to be between 1 and 12.');
-		if (amountbet % 1 != 0 || roll % 1 != 0) return this.sendReply('No decimals.');
-		if (amountbet < 0) return this.sendReply('Funny, yet the bet amount has to be more than 0.');
-		if (roll === dice) {
-			writeMoney('money', user.userid, amountbet);
-			return this.sendReply('You gambled on '+roll+' and the dice rolled '+dice+'. Congratulations, you win!');
-		} else {
-			writeMoney('money', user.userid, -amountbet);
-			return this.sendReply('You gambled on '+roll+' and the dice rolled '+dice+'. You lost, sorry.');
-		}
-	},
+
 
 	wallet: 'money',
 	atm: 'money',
@@ -113,21 +92,6 @@ var commands = exports.commands = {
 		}
 	},
 
-	transferbucks: function(target, room, user) {
-		var amount = readMoney('money', user.userid);
-		if (!target) return this.sendReply('/transferbucks [to], [amount] - Transfers bucks to another user.');
-		var parts = target.split(',');
-		parts[0] = this.splitTarget(parts[0]);
-		var targetUser = this.targetUser;
-		if (NaN(parts[1])) return this.sendReply('Funny, now use a real number.');
-		if (parts[1] > amount) return this.sendReply('You can\'t transfer bucks more than you have.');
-		if (!targetUser) return this.sendReply('User '+this.targetUsername+' not found.');
-		var newamountfrom = writeMoney('money', user.userid, -parts[1]);
-		var newamountto = writeMoney('money', targetUser.userid, parts[1]);
-		return this.sendReply('You have transfered '+parts[1]+' bucks to '+targetUser.name+'. You now have '+newamountfrom+' bucks.');
-		targetUser.send(user.name+' has transfered '+parts[1]+' bucks to you. You now have '+newamountto+' bucks.');
-	},
-	
 	tb: 'takebucks',
 	takebucks: function(target, room, user) {
 		if(!user.can('hotpatch')) return this.sendReply('You do not have enough authority to do this.');
