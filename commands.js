@@ -53,7 +53,7 @@ var commands = exports.commands = {
 		if (!target) return this.sendReply('/gamble [amount],[roll] - Rolls a 12-sided dice. If your roll matches the dice\'s roll, your betted amount doubles, else, you lose that amount.');
 		var dice = Math.floor((Math.random()*12)+1);
 		if (amountbet > amount) return this.sendReply('You can not bet more than you have.');
-		if (NaN(amountbet]) || NaN(roll)) return this.sendReply('Funny, now use a number.');
+		if (NaN(amountbet) || NaN(roll)) return this.sendReply('Funny, now use a number.');
 		if ( 1 > roll > 12) return this.sendReply('The roll number has to be between 1 and 12.');
 		if (amountbet % 1 != 0 || roll % 1 != 0) return this.sendReply('No decimals.');
 		if (amountbet < 0) return this.sendReply('Funny, yet the bet amount has to be more than 0.');
