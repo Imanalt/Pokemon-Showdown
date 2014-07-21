@@ -56,7 +56,7 @@ var commands = exports.commands = {
 			var jackpotwin = jackpot;
 			jackpot = 0;
 		 	writeMoney('money', user.userid, jackpotwin);
-		 	return this.sendReplyBox('You won the jackpot. Congratulations, you win '+jackpotwin+' bucks!);
+		 	return this.sendReplyBox('You won the jackpot. Congratulations, you win '+jackpotwin+' bucks!');
 		}
 		
 		jackpot += amount/6;
