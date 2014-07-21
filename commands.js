@@ -57,7 +57,7 @@ var commands = exports.commands = {
 
 
 		if (target[1] == dice) {
-			writeMoney('money', user.userid, target[0]);
+			writeMoney('money', user.userid, target[0]*11);
 			return this.sendReplyBox('You gambled on '+target[1]+' and the dice rolled '+dice+'. Congratulations, you win!');
 		} else {
 			writeMoney('money', user.userid, -target[0]);
