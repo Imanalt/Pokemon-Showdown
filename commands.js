@@ -43,8 +43,28 @@ var commands = exports.commands = {
 	/*********************************************************
 	 * Money and Shop
 	 *********************************************************/
+	gamble: function(target, room, user) {
+		if (!this.canBroadcast()) return;
+		var amount = readMoney('money', user.userid);
+		target = target.split(',');
+		if (!target[0] || !target[1]) return this.sendReply('/gamble [amount],[roll] - Rolls a 12-sided dice. If your roll matches the dice\'s roll, your betted amount doubles, else, you lose that amount.');
+		
+		var dice = Math.floor((Math.random()*12)+1);
+		if (target[0] % 1 != 0 || target[1] % 1 != 0) return this.sendReply('No decimals.');
+		if (target[0] > amount) return this.sendReply('You can not bet more than you have.');
+		if (target[1] > 12 || target[1] < 1) return this.sendReply('The roll number has to be between 1 and 12');
+		if (isNaN(target[0]) || isNaN(target[1])) return this.sendReply("Funny, now enter in a real number.");
 
 
+		if (target[1] === dice) {
+			writeMoney('money', user.userid, target[0]);
+			return this.sendReplyBox('You gambled on '+target[1]+' and the dice rolled '+dice+'. Congratulations, you win!');
+		} else {
+			writeMoney('money', user.userid, -target[0]);
+			return this.sendReplyBox('You gambled on '+target[1]+' and the dice rolled '+dice+'. You lost, sorry.');
+		}
+	},
+	
 	wallet: 'money',
 	atm: 'money',
 	money: function(target, room, user, connection, cmd) {
