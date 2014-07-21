@@ -231,7 +231,7 @@ var commands = exports.commands = {
 		if (!user.canCustomSymbol) return this.sendReply('You need to buy this item from the shop to use it.');
 		if (!target || target.length > 1) return this.sendReply('/customsymbol [symbol] - changes your symbol (usergroup) to the specified symbol. The symbol can only be one character');
 		//if (toId(target) === target || Config.groups.byRank[target]) {
-		if (target.match(/[A-z0-9 +%@&~#!‽|]/) return this.sendReply('Sorry, but you cannot change your symbol to this for safety/stability reasons.');
+		if (target.match(/[A-z0-9 +%@&~#!‽|]/)) return this.sendReply('Sorry, but you cannot change your symbol to this for safety/stability reasons.');
 	
 		user.getIdentity = function () {
 			var name = Object.getPrototypeOf(this).getIdentity.call(this);
